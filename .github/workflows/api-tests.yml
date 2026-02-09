@@ -25,4 +25,5 @@ jobs:
         run: |
           cd API-Postman
           newman run DummyJson.postman_collection.json \
-            -e "DummyJSON Env.postman_environment.json"
+            -e "DummyJSON Env.postman_environment.json" \
+            -d DataDriven.csv
