@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="8" passed="7" failed="1" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-02-07T03:55:10 EET" name="Default suite" finished-at="2026-02-07T03:55:39 EET" duration-ms="29260">
+    <groups>
+    </groups>
+    <test started-at="2026-02-07T03:55:10 EET" name="Default test" finished-at="2026-02-07T03:55:39 EET" duration-ms="29260">
+      <class name="SauceDemo.StandardUserTests">
+        <test-method is-config="true" signature="setup()[pri:0, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:10 EET" name="setup" finished-at="2026-02-07T03:55:12 EET" duration-ms="1736" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="loginStandardUser()[pri:1, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:12 EET" name="loginStandardUser" finished-at="2026-02-07T03:55:14 EET" duration-ms="2303" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- loginStandardUser -->
+        <test-method signature="sortProductsByPriceLowToHigh()[pri:2, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:14 EET" name="sortProductsByPriceLowToHigh" finished-at="2026-02-07T03:55:16 EET" duration-ms="2154" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- sortProductsByPriceLowToHigh -->
+        <test-method signature="addRandomItemsToCart()[pri:3, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:16 EET" name="addRandomItemsToCart" finished-at="2026-02-07T03:55:18 EET" duration-ms="2105" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- addRandomItemsToCart -->
+        <test-method signature="removeItemFromCart()[pri:4, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:18 EET" name="removeItemFromCart" finished-at="2026-02-07T03:55:20 EET" duration-ms="1304" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- removeItemFromCart -->
+        <test-method signature="checkoutWithValidInformationt()[pri:5, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:20 EET" name="checkoutWithValidInformationt" finished-at="2026-02-07T03:55:22 EET" duration-ms="2434" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- checkoutWithValidInformationt -->
+        <test-method signature="Logout()[pri:6, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:22 EET" name="Logout" finished-at="2026-02-07T03:55:24 EET" duration-ms="2150" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- Logout -->
+        <test-method signature="loginWithInvalidPassword()[pri:7, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:24 EET" name="loginWithInvalidPassword" finished-at="2026-02-07T03:55:25 EET" duration-ms="1231" status="FAIL">
+          <exception class="java.lang.AssertionError">
+            <message>
+              <![CDATA[expected [https://www.saucedemo.com/inventory.html] but found [https://www.saucedemo.com/]]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[java.lang.AssertionError: expected [https://www.saucedemo.com/inventory.html] but found [https://www.saucedemo.com/]
+at org.testng.Assert.fail(Assert.java:111)
+at org.testng.Assert.failNotEquals(Assert.java:1590)
+at org.testng.Assert.assertEqualsImpl(Assert.java:150)
+at org.testng.Assert.assertEquals(Assert.java:132)
+at org.testng.Assert.assertEquals(Assert.java:656)
+at org.testng.Assert.assertEquals(Assert.java:666)
+at SauceDemo.StandardUserTests.loginWithInvalidPassword(StandardUserTests.java:161)
+at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:687)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:995)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+at org.testng.TestRunner.privateRun(TestRunner.java:741)
+at org.testng.TestRunner.run(TestRunner.java:616)
+at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
+at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413)
+at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373)
+at org.testng.SuiteRunner.run(SuiteRunner.java:312)
+at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
+at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274)
+at org.testng.TestNG.runSuitesLocally(TestNG.java:1208)
+at org.testng.TestNG.runSuites(TestNG.java:1112)
+at org.testng.TestNG.run(TestNG.java:1079)
+at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
+at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:293)
+at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:91)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.AssertionError -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- loginWithInvalidPassword -->
+        <test-method signature="checkoutWithMissingInformation()[pri:8, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:25 EET" name="checkoutWithMissingInformation" finished-at="2026-02-07T03:55:29 EET" duration-ms="3728" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- checkoutWithMissingInformation -->
+        <test-method is-config="true" signature="AFTER()[pri:0, instance:SauceDemo.StandardUserTests@517d4a0d]" started-at="2026-02-07T03:55:29 EET" name="AFTER" finished-at="2026-02-07T03:55:39 EET" duration-ms="10051" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- AFTER -->
+      </class> <!-- SauceDemo.StandardUserTests -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>

@@ -1,0 +1,1647 @@
+{
+  "info": {
+    "_postman_id": "bcc5e361-1cac-460e-8a21-0df935365dfc",
+    "name": "DummyJson",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51082348",
+    "_collection_link": "https://go.postman.co/collection/51082348-bcc5e361-1cac-460e-8a21-0df935365dfc?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Login success - status 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "  const ct = pm.response.headers.get(\"Content-Type\");",
+                  "  pm.expect(ct).to.include(\"application/json\");",
+                  "});",
+                  "pm.test(\"Token exists\", () => pm.expect(jsonData).to.have.property(\"accessToken\"));",
+                  "pm.environment.set(\"token\", jsonData.accessToken);",
+                  "pm.environment.set(\"refreshToken\", jsonData.refreshToken);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"emilys\",\n  \"password\": \"emilyspass\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "# User Authentication - Login\n\n## Overview\n\nThis endpoint authenticates a user and returns access tokens for subsequent API requests. Use this endpoint to log in users and obtain JWT tokens for authorization.\n\n## Endpoint Details\n\n- **Method:** `POST`\n    \n- **URL:** `{{baseUrl}}/auth/login`\n    \n- **Content-Type:** `application/json`\n    \n\n## Request Body Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `username` | string | Yes | The user's username for authentication |\n| `password` | string | Yes | The user's password for authentication |\n\n### Example Request Body\n\n``` json\n{\n  \"username\": \"emilys\",\n  \"password\": \"emilyspass\"\n}\n\n ```\n\n## Response Format\n\n### Success Response (200 OK)\n\nThe API returns a JSON object containing authentication tokens:\n\n``` json\n{\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"id\": 1,\n  \"username\": \"emilys\",\n  \"email\": \"emily.johnson@x.dummyjson.com\",\n  \"firstName\": \"Emily\",\n  \"lastName\": \"Johnson\",\n  \"gender\": \"female\",\n  \"image\": \"https://dummyjson.com/icon/emilys/128\"\n}\n\n ```\n\n### Response Fields\n\n- **accessToken**: JWT token used for authenticating subsequent API requests (short-lived)\n    \n- **refreshToken**: Token used to obtain a new access token when it expires (long-lived)\n    \n- Additional user profile information is also returned\n    \n\n## Automatic Token Management\n\n⚠️ **Important:** This request includes a post-response script that automatically saves the tokens to environment variables:\n\n- `accessToken` → saved to `{{token}}`\n    \n- `refreshToken` → saved to `{{refreshToken}}`\n    \n\nThese tokens are then available for use in other requests requiring authentication.\n\n## Authentication Flow\n\n1. Send user credentials (username and password) to this endpoint\n    \n2. Receive access token and refresh token in the response\n    \n3. Tokens are automatically stored in environment variables\n    \n4. Use the access token in the `Authorization` header for protected endpoints\n    \n5. When the access token expires, use the refresh token to obtain a new one\n    \n\n## Validation\n\nThe request includes automated tests that verify:\n\n- ✓ Response status is 200 OK\n    \n- ✓ Response time is under 2000ms\n    \n- ✓ Content-Type header is application/json\n    \n- ✓ Access token is present in the response\n    \n\n## Error Responses\n\n- **400 Bad Request**: Invalid request format or missing required fields\n    \n- **401 Unauthorized**: Invalid username or password\n    \n- **429 Too Many Requests**: Rate limit exceeded"
+          },
+          "response": []
+        },
+        {
+          "name": "Login -wrong password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 400 for invalid login\", () => {",
+                  "   pm.expect(pm.response.code).to.eql(400);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Error message is returned\", () => {",
+                  "    pm.expect(responseData).to.have.property(\"message\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"emilys\",\n  \"password\": \"ss\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "# Invalid Login Test - Wrong Password\n\n## Overview\n\nThis request tests the API's authentication failure handling by attempting to log in with an incorrect password. It validates that the system properly rejects invalid credentials and returns appropriate error responses.\n\n## Endpoint\n\n**POST** `{{baseUrl}}/auth/login`\n\n## Request Body Parameters\n\nThe request sends a JSON payload with the following fields:\n\n- **username** (string): The user's username attempting to log in\n    \n    - Example: `\"emilys\"`\n        \n- **password** (string): An intentionally incorrect password to trigger authentication failure\n    \n    - Example: `\"ss\"` (invalid password)\n        \n\n## Expected Response\n\nWhen invalid credentials are provided, the API should return:\n\n- **Status Code**: `400 Bad Request`\n    \n- **Content-Type**: `application/json`\n    \n- **Response Body**: JSON object containing an error message explaining the authentication failure\n    \n\n## Test Validations\n\nThis request includes automated tests that verify:\n\n1. **Status Code Validation**: Confirms the response returns a `400` status code for invalid login attempts\n    \n2. **Performance Check**: Ensures the response time is under 2000ms\n    \n3. **Content-Type Verification**: Validates that the response has `Content-Type: application/json` header\n    \n4. **Error Message Presence**: Checks that the response body contains a `message` property with error details\n    \n\n## Use Case\n\nThis request is part of negative testing for the authentication system. It validates that the API:\n\n- Properly handles authentication failures\n    \n- Returns appropriate HTTP status codes for invalid credentials\n    \n- Provides meaningful error messages to clients\n    \n- Maintains acceptable response times even for failed authentication attempts\n    \n\nThis ensures the API's security and error handling mechanisms are working correctly."
+          },
+          "response": []
+        },
+        {
+          "name": "Authenticated User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has id, username, email\", () => {",
+                  "    pm.expect(jsonData).to.have.property(\"id\");",
+                  "    pm.expect(jsonData).to.have.property(\"username\");",
+                  "    pm.expect(jsonData).to.have.property(\"email\");",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"User fields have correct types\", () => {",
+                  "    pm.expect(jsonData.id).to.be.a(\"number\");",
+                  "    pm.expect(jsonData.username).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.email).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "# Get Authenticated User\n\n## Overview\n\nThis endpoint retrieves the complete profile information of the currently authenticated user. It returns comprehensive user details including personal information, contact details, address, company information, banking details, and more.\n\n## Authentication\n\n**Required:** Bearer Token\n\nThis endpoint requires authentication via a Bearer token. The token must be included in the `Authorization` header:\n\n```\nAuthorization: Bearer {{token}}\n\n ```\n\nMake sure you have a valid authentication token before calling this endpoint. You can obtain a token by logging in through the `/auth/login` endpoint.\n\n## Request Details\n\n- **Method:** GET\n    \n- **URL:** `{{baseUrl}}/auth/me`\n    \n- **Headers:**\n    \n    - `Authorization: Bearer {{token}}`\n        \n\n## Response Structure\n\nThe endpoint returns a comprehensive JSON object with the following fields:\n\n### Personal Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `id` | number | Unique identifier for the user |\n| `firstName` | string | User's first name |\n| `lastName` | string | User's last name |\n| `maidenName` | string | User's maiden name (if applicable) |\n| `age` | number | User's age |\n| `gender` | string | User's gender |\n| `birthDate` | string | User's date of birth (YYYY-M-D format) |\n| `image` | string | URL to user's profile image |\n| `bloodGroup` | string | User's blood group |\n| `height` | number | User's height in cm |\n| `weight` | number | User's weight in kg |\n| `eyeColor` | string | User's eye color |\n\n### Contact Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `email` | string | User's email address |\n| `phone` | string | User's phone number |\n| `username` | string | User's username |\n| `password` | string | User's password (hashed) |\n\n### Physical Characteristics\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `hair` | object | Hair details with `color` and `type` properties |\n\n### Address Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `address` | object | Complete address object containing: |\n| `address.address` | string | Street address |\n| `address.city` | string | City name |\n| `address.state` | string | State name |\n| `address.stateCode` | string | State code |\n| `address.postalCode` | string | Postal/ZIP code |\n| `address.coordinates` | object | Geographic coordinates with `lat` and `lng` |\n| `address.country` | string | Country name |\n\n### Company Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `company` | object | Company details object containing: |\n| `company.department` | string | Department name |\n| `company.name` | string | Company name |\n| `company.title` | string | Job title |\n| `company.address` | object | Company address (same structure as user address) |\n\n### Banking Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `bank` | object | Banking details object containing: |\n| `bank.cardExpire` | string | Card expiration date (MM/YY) |\n| `bank.cardNumber` | string | Card number |\n| `bank.cardType` | string | Type of card |\n| `bank.currency` | string | Currency code |\n| `bank.iban` | string | IBAN number |\n\n### Additional Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `university` | string | University name |\n| `ein` | string | Employer Identification Number |\n| `ssn` | string | Social Security Number |\n| `userAgent` | string | User's browser user agent string |\n| `ip` | string | User's IP address |\n| `macAddress` | string | MAC address |\n| `role` | string | User's role (e.g., \"admin\", \"user\") |\n\n### Cryptocurrency Information\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `crypto` | object | Cryptocurrency wallet details containing: |\n| `crypto.coin` | string | Cryptocurrency type |\n| `crypto.wallet` | string | Wallet address |\n| `crypto.network` | string | Blockchain network |\n\n### Example Response (200 OK)\n\n``` json\n{\n  \"id\": 1,\n  \"firstName\": \"Emily\",\n  \"lastName\": \"Johnson\",\n  \"maidenName\": \"Smith\",\n  \"age\": 29,\n  \"gender\": \"female\",\n  \"email\": \"emily.johnson@x.dummyjson.com\",\n  \"phone\": \"+81 965-431-3024\",\n  \"username\": \"emilys\",\n  \"password\": \"emilyspass\",\n  \"birthDate\": \"1996-5-30\",\n  \"image\": \"https://dummyjson.com/icon/emilys/128\",\n  \"bloodGroup\": \"O-\",\n  \"height\": 193.24,\n  \"weight\": 63.16,\n  \"eyeColor\": \"Green\",\n  \"hair\": {\n    \"color\": \"Brown\",\n    \"type\": \"Curly\"\n  },\n  \"ip\": \"42.48.100.32\",\n  \"address\": {\n    \"address\": \"626 Main Street\",\n    \"city\": \"Phoenix\",\n    \"state\": \"Mississippi\",\n    \"stateCode\": \"MS\",\n    \"postalCode\": \"29112\",\n    \"coordinates\": {\n      \"lat\": -77.16213,\n      \"lng\": -92.084824\n    },\n    \"country\": \"United States\"\n  },\n  \"macAddress\": \"47:fa:41:18:ec:eb\",\n  \"university\": \"University of Wisconsin--Madison\",\n  \"bank\": {\n    \"cardExpire\": \"05/28\",\n    \"cardNumber\": \"3693233511855044\",\n    \"cardType\": \"Diners Club International\",\n    \"currency\": \"GBP\",\n    \"iban\": \"GB74MH2UZLR9TRPHYNU8F8\"\n  },\n  \"company\": {\n    \"department\": \"Engineering\",\n    \"name\": \"Dooley, Kozey and Cronin\",\n    \"title\": \"Sales Manager\",\n    \"address\": {\n      \"address\": \"263 Tenth Street\",\n      \"city\": \"San Francisco\",\n      \"state\": \"Wisconsin\",\n      \"stateCode\": \"WI\",\n      \"postalCode\": \"37657\",\n      \"coordinates\": {\n        \"lat\": 71.814525,\n        \"lng\": -161.150263\n      },\n      \"country\": \"United States\"\n    }\n  },\n  \"ein\": \"977-175\",\n  \"ssn\": \"900-590-289\",\n  \"userAgent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36\",\n  \"crypto\": {\n    \"coin\": \"Bitcoin\",\n    \"wallet\": \"0xb9fc2fe63b2a6c003f1c324c3bfa53259162181a\",\n    \"network\": \"Ethereum (ERC20)\"\n  },\n  \"role\": \"admin\"\n}\n\n ```\n\n## Response Codes\n\n| Status Code | Description |\n| --- | --- |\n| **200 OK** | Successfully retrieved user information |\n| **401 Unauthorized** | Missing or invalid authentication token |\n| **403 Forbidden** | Token is valid but lacks permission to access this resource |\n| **500 Internal Server Error** | Server-side error occurred |\n\n## Use Cases\n\n1. **Complete Profile Display**: Fetch all user information to display in a comprehensive profile page or user dashboard\n    \n2. **Session Validation**: Verify that the authentication token is still valid and retrieve current user context\n    \n3. **User Context**: Get the authenticated user's complete details to personalize the application experience\n    \n4. **Authorization Checks**: Retrieve user ID and role to perform authorization checks before accessing protected resources\n    \n5. **Account Management**: Load complete user information for profile updates, account settings, or administrative purposes\n    \n6. **KYC/Verification**: Access detailed user information including address, banking details, and identification numbers for verification processes\n    \n7. **User Analytics**: Gather comprehensive user data for analytics, reporting, or demographic analysis\n    \n\n## Security Notes\n\n- This endpoint returns sensitive information including password, SSN, banking details, and personal identification numbers\n    \n- Ensure proper access controls and data protection measures are in place\n    \n- Consider filtering sensitive fields in production environments based on user permissions\n    \n- The response time should typically be under 2-3 seconds\n    \n- The `Content-Type` of the response is `application/json`"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"Response contains accessToken\", () => {",
+                  "    pm.expect(jsonData).to.have.property(\"accessToken\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "# Refresh Authentication Token\n\n## Overview\n\nThis endpoint refreshes an expired or expiring access token using a valid refresh token. It allows users to obtain a new access token without requiring them to log in again, providing a seamless authentication experience.\n\n## Endpoint Details\n\n- **Method:** `POST`\n    \n- **URL:** `{{baseUrl}}/auth/refresh`\n    \n\n## Request Body\n\nThe request requires a JSON payload containing the refresh token:\n\n``` json\n{\n  \"refreshToken\": \"{{refreshToken}}\"\n}\n\n ```\n\n### Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `refreshToken` | string | Yes | A valid refresh token obtained during the initial login |\n\n## Response\n\nUpon successful authentication, the endpoint returns a new access token:\n\n``` json\n{\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```\n\n### Response Fields\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `accessToken` | string | A new JWT access token for authenticated requests |\n\n## Usage Notes\n\n- **When to use:** Call this endpoint when your current access token has expired or is about to expire\n    \n- **Token lifecycle:** Access tokens typically have a shorter lifespan than refresh tokens for security purposes\n    \n- **Best practice:** Implement automatic token refresh logic in your application to handle token expiration gracefully\n    \n- **Security:** Store refresh tokens securely and never expose them in client-side code or logs\n    \n\n## Variables Used\n\n- `{{baseUrl}}` - The base URL of the API\n    \n- `{{refreshToken}}` - The refresh token obtained from the login endpoint\n    \n\n## Example Usage\n\n1. Detect that your access token has expired (typically via a 401 Unauthorized response)\n    \n2. Call this endpoint with your stored refresh token\n    \n3. Receive a new access token in the response\n    \n4. Update your stored access token and retry the original request"
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "",
+                  " ",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response has users array\", () => {",
+                  "    pm.expect(jsonData).to.have.property(\"users\");",
+                  "    pm.expect(jsonData.users).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Users – Wrong Method",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"API rejects wrong HTTP method,status code = 404 \", () => {",
+                  "    pm.expect(pm.response.code).to.eql(404);",
+                  "});",
+                  " ",
+                  "",
+                  "",
+                  " ",
+                  "",
+                  "const status = pm.response.code;",
+                  "",
+                  "if (status === 200 || status === 201) {",
+                  "    pm.test(\"Content-Type is application/json\", () => {",
+                  "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "    });",
+                  "} else {",
+                  "    pm.test(\"Content-Type is not JSON for error responses\", () => {",
+                  "        console.log(\"Status is \" + status + \", Content-Type:\", pm.response.headers.get(\"Content-Type\"));",
+                  "    });",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "# List All Users – Wrong Method Test\n\n## Overview\n\nThis request is a **negative test case** designed to validate that the DummyJSON API properly handles incorrect HTTP methods. It intentionally sends a `POST` request to the `/users` endpoint, which is designed to accept only `GET` requests for listing users.\n\n## Purpose\n\nThe primary purpose of this test is to ensure that the API correctly rejects requests with inappropriate HTTP methods and returns the proper error response. This validates that the API has proper method validation and error handling in place.\n\n## Expected Behavior\n\nWhen this request is executed, the API should:\n\n- **Reject the POST request** since the `/users` endpoint expects a GET method for listing users\n    \n- **Return a 404 status code** indicating that the requested resource/method combination is not found\n    \n- **Respond within 2000ms** to ensure acceptable performance even for error responses\n    \n\n## Test Assertions\n\nThe post-response script includes the following automated validations:\n\n1. **HTTP Method Validation**: Verifies that the API returns a `404` status code, confirming it properly rejects the incorrect POST method\n    \n2. **Performance Check**: Ensures the response time is under 2000ms, validating that error handling doesn't introduce significant latency\n    \n3. **Content-Type Validation**: For successful responses (200/201), checks that the Content-Type header is `application/json`. For error responses like this 404, it logs the Content-Type for informational purposes\n    \n\n## Notes\n\n- This is part of a comprehensive API testing strategy that includes both positive and negative test cases\n    \n- The correct method for listing users would be `GET {{baseUrl}}/users`\n    \n- This test helps ensure API consumers receive clear feedback when using incorrect HTTP methods"
+          },
+          "response": []
+        },
+        {
+          "name": "User by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Returned user has correct id\", () => {",
+                  "    pm.expect(pm.response.json().id).to.eql(1);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "description": "# Get User by ID\n\n## Overview\n\nThis endpoint retrieves detailed information about a specific user from the DummyJSON API by their unique user ID. It returns a complete user profile including personal information, contact details, and other user attributes.\n\n## Path Variables\n\n| Variable | Type | Description | Required |\n| --- | --- | --- | --- |\n| `{{userId}}` | Integer | The unique identifier of the user to retrieve | Yes |\n\nThe `{{userId}}` variable should be set in your environment or collection variables. It represents the numeric ID of the user you want to fetch from the system.\n\n## Request Details\n\n- **Method:** GET\n    \n- **Endpoint:** `{{baseUrl}}/users/{{userId}}`\n    \n- **Authentication:** None required for this endpoint\n    \n- **Request Body:** None\n    \n\n## Expected Response\n\nThe endpoint returns a JSON object containing the user's complete profile information, including:\n\n- User identification (id, username)\n    \n- Personal details (firstName, lastName, age, gender)\n    \n- Contact information (email, phone)\n    \n- Address details\n    \n- Additional user metadata\n    \n\n**Response Format:** `application/json`\n\n**Example Response:**\n\n``` json\n{\n  \"id\": 1,\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"username\": \"johndoe\",\n  \"age\": 30,\n  \"gender\": \"male\"\n  ....\n}\n\n ```\n\n## Use Cases\n\n1. **User Profile Display:** Fetch user details to display on a profile page or dashboard\n    \n2. **User Verification:** Validate that a user exists in the system before performing operations\n    \n3. **Data Synchronization:** Retrieve the latest user information for syncing with external systems\n    \n4. **Admin Operations:** Access user details for administrative tasks or support purposes\n    \n\n## Automated Tests\n\nThis request includes comprehensive automated tests that validate:\n\n✅ **Status Code:** Verifies the response returns HTTP 200 (OK)  \n✅ **Performance:** Ensures response time is under 2000ms  \n✅ **Content Type:** Confirms the response is in JSON format (`application/json`)  \n✅ **Data Integrity:** Validates that the returned user ID matches the requested ID\n\nThese tests run automatically after each request is sent, providing immediate feedback on the API's health and correctness.\n\n## Notes\n\n- Make sure the `{{userId}}` variable is set to a valid user ID before sending the request\n    \n- Invalid or non-existent user IDs may return a 404 error\n    \n- The `{{baseUrl}}` variable should point to the DummyJSON API base URL (typically `https://dummyjson.com`)"
+          },
+          "response": []
+        },
+        {
+          "name": "User -Invalid Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const userErrorData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status is 404 for invalid user\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates invalid user\", () => {",
+                  "    pm.expect(userErrorData).to.have.property(\"message\");",
+                  "    pm.expect(userErrorData.message.toLowerCase()).to.include(\"not found\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/19999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "19999"
+              ]
+            },
+            "description": "# User - Invalid ID\n\n## Overview\n\nThis request tests the API's error handling behavior when attempting to retrieve a user with an **invalid or non-existent user ID**. It validates that the API properly returns a 404 error response when the requested user cannot be found.\n\n## Endpoint\n\n- **Method:** `GET`\n    \n- **URL:** `{{baseUrl}}/users/19999`\n    \n- **Test User ID:** `19999` (intentionally invalid)\n    \n\n## Expected Behavior\n\nWhen a user ID does not exist in the system, the API should:\n\n- Return a **404 Not Found** HTTP status code\n    \n- Include a JSON response body with an error message\n    \n- Set the `Content-Type` header to `application/json`\n    \n- Respond within an acceptable time frame (< 2000ms)\n    \n\n## Test Validations\n\nThis request includes automated post-response tests that verify:\n\n1. **Status Code Validation**\n    \n    - Confirms the response status is `404` for the invalid user ID\n        \n2. **Performance Check**\n    \n    - Ensures the response time is less than 2000 milliseconds\n        \n3. **Content-Type Verification**\n    \n    - Validates that the response header includes `Content-Type: application/json`\n        \n4. **Error Message Validation**\n    \n    - Checks that the response body contains a `message` property\n        \n    - Verifies the error message includes \"not found\" (case-insensitive)\n        \n\n## Use Case\n\nThis request is essential for:\n\n- **Error handling testing** - Ensuring the API gracefully handles invalid input\n    \n- **API contract validation** - Confirming proper error response format\n    \n- **Negative testing** - Verifying the system behaves correctly under failure conditions\n    \n- **Integration testing** - Validating error responses match expected patterns"
+          },
+          "response": []
+        },
+        {
+          "name": "Search users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  " ",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Search results returned\", () => {",
+                  "    pm.expect(pm.response.json().users.length).to.be.above(0);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/search?q=John",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "John"
+                }
+              ]
+            },
+            "description": "# Search Users\n\n## Overview\n\nThis endpoint allows you to search for users in the system based on a search query. It performs a search across user data and returns matching results.\n\n## Query Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `q` | string | Yes | The search query string to find matching users. Can search across user fields like name, username, email, etc. |\n\n### Example\n\n```\nGET {{baseUrl}}/users/search?q=John\n\n ```\n\n## Expected Response Format\n\nThe endpoint returns a JSON object containing an array of matching users:\n\n``` json\n{\n  \"users\": [\n    {\n      \"id\": 1,\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"username\": \"johndoe\",\n      // ... other user fields\n    }\n  ],\n  \"total\": 1,\n  \"skip\": 0,\n  \"limit\": 30\n}\n\n ```\n\n**Response Fields:**\n\n- `users` - Array of user objects matching the search criteria\n    \n- `total` - Total number of users found\n    \n- `skip` - Number of results skipped (for pagination)\n    \n- `limit` - Maximum number of results returned\n    \n\n## Use Cases\n\n1. **Find users by first name**: Search for all users with a specific first name\n    \n    - Example: `?q=John`\n        \n2. **Find users by last name**: Search for users by their surname\n    \n    - Example: `?q=Smith`\n        \n3. **Find users by email**: Locate users using their email address\n    \n    - Example: `?q=john@example.com`\n        \n4. **Partial matching**: The search supports partial string matching\n    \n    - Example: `?q=Jo` will match \"John\", \"Joseph\", \"Joanna\", etc.\n        \n\n## Notes\n\n- The search is typically case-insensitive\n    \n- The search query performs a partial match across multiple user fields\n    \n- Results are paginated with a default limit (usually 30 users per request)\n    \n- An empty or very short query may return a large number of results\n    \n- The endpoint requires proper authentication (check collection-level auth settings)\n    \n- Response time should be under 2000ms as validated by the test script"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "item": [
+        {
+          "name": "All Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Products array exists\", () => {",
+                  "    pm.expect(jsonData).to.have.property(\"products\");",
+                  "    pm.expect(jsonData.products).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"Products array is not empty\", () => {",
+                  "    pm.expect(jsonData.products.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"First product has required keys\", () => {",
+                  "    const firstProduct = jsonData.products[0];",
+                  "    pm.expect(firstProduct).to.have.property(\"id\");",
+                  "    pm.expect(firstProduct).to.have.property(\"title\");",
+                  "    pm.expect(firstProduct).to.have.property(\"price\");",
+                  "    pm.expect(firstProduct).to.have.property(\"stock\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "description": "# Get All Products\n\n## Overview\n\nThis endpoint retrieves a complete list of all products available in the DummyJSON API. It returns a paginated collection of product objects with detailed information about each item.\n\n## Endpoint Details\n\n- **Method:** GET\n    \n- **URL:** `{{baseUrl}}/products`\n    \n- **Authentication:** None required\n    \n\n## Response Structure\n\nThe API returns a JSON object containing an array of products:\n\n``` json\n{\n  \"products\": [\n    {\n      \"id\": 1,\n      \"title\": \"Product Name\",\n      \"description\": \"Product description\",\n      \"price\": 549,\n      \"discountPercentage\": 12.96,\n      \"rating\": 4.69,\n      \"stock\": 94,\n      \"brand\": \"Brand Name\",\n      \"category\": \"Category Name\",\n      \"thumbnail\": \"https://...\",\n      \"images\": [\"https://...\"]\n    }\n  ],\n  \"total\": 100,\n  \"skip\": 0,\n  \"limit\": 30\n}\n\n ```\n\n## Response Fields\n\n### Product Object Properties\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `id` | number | Unique identifier for the product |\n| `title` | string | Product name/title |\n| `description` | string | Detailed product description |\n| `price` | number | Product price in USD |\n| `discountPercentage` | number | Discount percentage applied |\n| `rating` | number | Average customer rating (0-5) |\n| `stock` | number | Available inventory quantity |\n| `brand` | string | Product brand name |\n| `category` | string | Product category |\n| `thumbnail` | string | URL to product thumbnail image |\n| `images` | array | Array of product image URLs |\n\n### Pagination Fields\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `total` | number | Total number of products available |\n| `skip` | number | Number of products skipped (for pagination) |\n| `limit` | number | Maximum products returned per request |\n\n## Usage Notes\n\n- **Default Behavior:** Returns the first 30 products by default\n    \n- **Pagination:** Use query parameters `limit` and `skip` to paginate through results\n    \n- **Response Time:** Expected response time is under 2 seconds\n    \n- **Content-Type:** Returns `application/json`\n    \n- **Status Code:** Successful requests return `200 OK`\n    \n\n## Example Use Cases\n\n1. **Display Product Catalog:** Fetch all products to display in an e-commerce storefront\n    \n2. **Inventory Management:** Retrieve product stock levels for inventory tracking\n    \n3. **Price Comparison:** Get pricing information across all products\n    \n4. **Search Index:** Build a searchable product database\n    \n\n## Automated Tests\n\nThis request includes automated tests that verify:\n\n- ✓ Status code is 200\n    \n- ✓ Response time is less than 2000ms\n    \n- ✓ Content-Type header is application/json\n    \n- ✓ Products array exists and is not empty\n    \n- ✓ Product objects contain required fields (id, title, price, stock)"
+          },
+          "response": []
+        },
+        {
+          "name": "Product by Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "const productSchema = {",
+                  "    type: \"object\",",
+                  "    required: [\"id\", \"title\", \"description\", \"price\", \"stock\", \"category\"],",
+                  "    properties: {",
+                  "        id: { type: \"number\" },",
+                  "        title: { type: \"string\" },",
+                  "        description: { type: \"string\" },",
+                  "        price: { type: \"number\" },",
+                  "        stock: { type: \"number\" },",
+                  "        category: { type: \"string\" },",
+                  "        discountPercentage: { type: \"number\" },",
+                  "        rating: { type: \"number\" },",
+                  "        brand: { type: \"string\" },",
+                  "        thumbnail: { type: \"string\" },",
+                  "        images: { type: \"array\" }",
+                  "    },",
+                  "    additionalProperties: true",
+                  "};",
+                  "",
+                  "",
+                  "pm.test(\"Product response schema is valid\", () => {",
+                  "    pm.response.to.have.jsonSchema(productSchema);",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "# Get Product by ID\n\nThis endpoint retrieves detailed information about a specific product using its unique identifier.\n\n## Endpoint\n\n`GET {{baseUrl}}/products/{{productId}}`\n\n## Path Variables\n\n- `productId` (required) - The unique identifier of the product to retrieve\n    \n\n## Query Parameters\n\nNone\n\n## Request Headers\n\n- `Content-Type: application/json`\n    \n\n## Response\n\n### Success Response (200 OK)\n\nReturns a product object with the following properties:\n\n``` json\n{\n  \"id\": 1,\n  \"title\": \"Product Name\",\n  \"description\": \"Product description\",\n  \"price\": 99.99,\n  \"discountPercentage\": 12.96,\n  \"rating\": 4.69,\n  \"stock\": 94,\n  \"brand\": \"Brand Name\",\n  \"category\": \"Category Name\",\n  \"thumbnail\": \"https://...\",\n  \"images\": [\"https://...\"]\n}\n\n ```\n\n### Error Responses\n\n- `404 Not Found` - Product with the specified ID does not exist\n    \n- `400 Bad Request` - Invalid product ID format\n    \n\n## Example Usage\n\nTo retrieve product with ID 1:\n\n- Set `productId` variable to `1`\n    \n- Send the request\n    \n\n## Notes\n\n- The `productId` must be a valid integer\n    \n- Response includes complete product details including images and stock information\n    \n- This endpoint does not require authentication"
+          },
+          "response": []
+        },
+        {
+          "name": "Product by- Invalid Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 for invalid product\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  " ",
+                  "",
+                  "pm.test(\"Error message indicates product not found\", () => {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"message\");",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "9999"
+              ]
+            },
+            "description": "# Product by Invalid ID - Error Handling Test\n\n## Overview\n\nThis request tests the API's error handling behavior when attempting to retrieve a product with an invalid or non-existent product ID. It validates that the system properly handles edge cases and returns appropriate error responses.\n\n## Purpose\n\nValidates that the API correctly returns a **404 Not Found** status code when requesting a product that doesn't exist in the database. This ensures robust error handling and proper API behavior for invalid resource requests.\n\n## Expected Behavior\n\n- **Status Code**: `404 Not Found`\n    \n- **Response**: JSON object containing an error message indicating the product was not found\n    \n- **Response Time**: Should complete within 2000ms\n    \n\n## Test Details\n\n### Invalid Product ID\n\nThe product ID being tested is **9999**, which is intentionally invalid and does not exist in the system. This allows us to verify the API's error handling without affecting real product data.\n\n### Automated Tests\n\nThis request includes automated post-response tests that verify:\n\n- ✅ Status code is exactly `404`\n    \n- ✅ Response time is under 2000ms\n    \n- ✅ Response body contains an error `message` property\n    \n\nThese tests run automatically after each request execution to ensure consistent error handling behavior.\n\n## Usage\n\nSend this request to verify that the API properly handles requests for non-existent products. This is particularly useful for:\n\n- Regression testing\n    \n- API contract validation\n    \n- Error handling verification"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/search?q=phone",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "phone"
+                }
+              ]
+            },
+            "description": "# Search Products\n\n# Overview\n\nThis endpoint searches for products in the DummyJSON catalog based on a search query. It allows you to find products by matching the search term against product names, descriptions, and other relevant fields.\n\n## Parameters\n\n### Query Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `q` | string | Yes | The search term used to find matching products. The search is performed across product names, descriptions, and other searchable fields. |\n\n**Example values:**\n\n- `phone` - Search for phone-related products\n    \n- `laptop` - Search for laptop products\n    \n- `watch` - Search for watch products\n    \n\n## Response\n\nThe endpoint returns a JSON object containing the search results.\n\n**Response Format:**\n\n``` json\n{\n  \"products\": [\n    {\n      \"id\": number,\n      \"title\": string,\n      \"description\": string,\n      \"price\": number,\n      \"category\": string,\n      // ... other product fields\n    }\n  ],\n  \"total\": number,\n  \"skip\": number,\n  \"limit\": number\n}\n\n ```\n\n**Response Fields:**\n\n- `products` - Array of product objects matching the search query\n    \n- `total` - Total number of products found\n    \n- `skip` - Number of products skipped (for pagination)\n    \n- `limit` - Maximum number of products returned\n    \n\n**Status Codes:**\n\n- `200 OK` - Search completed successfully\n    \n- `400 Bad Request` - Invalid search query\n    \n- `500 Internal Server Error` - Server error\n    \n\n## Example Use Cases\n\n### 1\\. **Search for Electronics**\n\nSearch for phone-related products to display in a mobile devices category:\n\n```\nGET {{baseUrl}}/products/search?q=phone\n\n ```\n\n### 2\\. **Product Discovery**\n\nAllow users to search for specific items in an e-commerce application by entering search terms in a search bar.\n\n### 3\\. **Inventory Lookup**\n\nEnable administrators to quickly find products in the catalog for inventory management purposes.\n\n### 4\\. **Autocomplete/Suggestions**\n\nUse this endpoint to power search suggestions as users type in a search field.\n\n## Notes\n\n- The search is case-insensitive and matches partial strings\n    \n- Empty or very short search terms may return broad results\n    \n- The endpoint supports pagination through additional query parameters (if available)\n    \n- Response time is typically under 2000ms\n    \n- Content-Type is always `application/json`\n    \n- Authentication may be required depending on API configuration"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Products - Negative",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const searchResponse = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"No products found\", () => {",
+                  "    pm.expect(searchResponse.products).to.be.an(\"array\").that.is.empty;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/search?q=zzz",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "zzz"
+                }
+              ]
+            },
+            "description": "# Search Products - Negative Test Case\n\n## Overview\n\nThis request is a **negative test case** designed to validate the API's behavior when searching for products that do not exist in the system.\n\n## Purpose\n\nTests the product search endpoint's response when querying for non-existent products, ensuring the API handles \"no results\" scenarios gracefully without errors.\n\n## Request Details\n\n### Query Parameter\n\n- **`q`**: The search query string\n    \n    - **Value**: `zzz`\n        \n    - **Purpose**: This intentionally searches for products that don't exist to trigger a \"no results found\" scenario\n        \n\n## Expected Behavior\n\nWhen searching for non-existent products, the API should:\n\n- Return a **200 OK** status code (successful request, even with no results)\n    \n- Respond with a JSON object containing an empty `products` array\n    \n- Complete the request within acceptable time limits (< 2000ms)\n    \n- Include proper `Content-Type: application/json` header\n    \n\n### Expected Response Structure\n\n``` json\n{\n  \"products\": [],\n  \"total\": 0,\n  \"skip\": 0,\n  \"limit\": 0\n}\n\n ```\n\n## Test Validations\n\nThis request includes automated post-response tests that verify:\n\n1. ✅ **Status Code**: Confirms the response status is 200\n    \n2. ✅ **Response Time**: Ensures the API responds in under 2000ms\n    \n3. ✅ **Content Type**: Validates the response has `application/json` content type\n    \n4. ✅ **Empty Results**: Verifies that the `products` array is empty\n    \n\n## Use Case\n\nThis negative test is essential for:\n\n- Ensuring the API doesn't crash or return errors when no products match the search\n    \n- Validating that the response structure remains consistent even with zero results\n    \n- Testing edge cases in the product search functionality\n    \n- Confirming proper error handling and graceful degradation"
+          },
+          "response": []
+        },
+        {
+          "name": "Add product-csv file",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Check for 201 first - if this fails, the others might not matter",
+                  "pm.test(\"Status code is 201 Created\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Returns JSON data\", () => {",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "// 1. Validate the Title (String)",
+                  "pm.test(\"Data Check: Title is correct\", () => {",
+                  "    pm.expect(jsonData.title).to.eql(pm.iterationData.get(\"product_title\"));",
+                  "});",
+                  "",
+                  "pm.test(\"Data Check: Stock matches CSV\", () => {",
+                  "    pm.expect(String(jsonData.stock)).to.eql(String(pm.iterationData.get(\"stock\")));",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{product_title}}\",\n  \"description\": \"{{description}}\",\n  \"price\": \"{{price}}\",\n  \"stock\": \"{{stock}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "add"
+              ]
+            },
+            "description": "# Add Product\n\n## Overview\n\nThis endpoint adds a new product to the DummyJSON API inventory. It accepts product details in JSON format and returns the created product with a unique ID and timestamp.\n\n## Endpoint Details\n\n- **Method:** POST\n    \n- **URL:** `{{baseUrl}}/products/add`\n    \n- **Content-Type:** application/json\n    \n\n## Request Body Parameters\n\nThe request body must be a JSON object containing the following fields:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `title` | string | Yes | The name/title of the product |\n| `description` | string | Yes | A detailed description of the product |\n| `price` | string/number | Yes | The price of the product (can be sent as string or number) |\n| `stock` | string/number | Yes | The available stock quantity for the product |\n\n### Example Request Body\n\n``` json\n{\n  \"title\": \"Premium Wireless Headphones\",\n  \"description\": \"High-quality noise-cancelling headphones with 30-hour battery life\",\n  \"price\": \"199.99\",\n  \"stock\": \"50\"\n}\n\n ```\n\n## Variables Used\n\nThis request uses the following variables for dynamic data:\n\n- **`{{baseUrl}}`** - The base URL for the DummyJSON API (e.g., `https://dummyjson.com`)\n    \n- **`{{product_title}}`** - Dynamic product title value\n    \n- **`{{description}}`** - Dynamic product description value\n    \n- **`{{price}}`** - Dynamic price value\n    \n- **`{{stock}}`** - Dynamic stock quantity value\n    \n\nThese variables can be set in your environment or collection variables, and are particularly useful when running the request with CSV data files for bulk product creation.\n\n## Expected Response\n\n### Success Response (201 Created)\n\nWhen the product is successfully created, the API returns:\n\n- **Status Code:** 201 Created\n    \n- **Response Time:** Typically < 2000ms\n    \n- **Content-Type:** application/json\n    \n\n#### Response Body Structure\n\n``` json\n{\n  \"id\": 201,\n  \"title\": \"Premium Wireless Headphones\",\n  \"description\": \"High-quality noise-cancelling headphones with 30-hour battery life\",\n  \"price\": \"199.99\",\n  \"stock\": \"50\",\n  \"createdAt\": \"2024-01-15T10:30:00.000Z\"\n}\n\n ```\n\nThe response includes:\n\n- All the fields from the request body\n    \n- A unique `id` assigned to the new product\n    \n- A `createdAt` timestamp indicating when the product was created\n    \n\n## Authentication Requirements\n\nThis endpoint may require authentication depending on the DummyJSON API configuration. If authentication is needed:\n\n- Use Bearer token authentication\n    \n- Include the token in the Authorization header: `Authorization: Bearer {{token}}`\n    \n- Obtain the token from the Login endpoint before making this request\n    \n\n## Automated Tests\n\nThis request includes automated tests that validate:\n\n- ✅ Status code is 201 Created\n    \n- ✅ Response time is less than 2000ms\n    \n- ✅ Response body is valid JSON\n    \n- ✅ Product title matches the input value\n    \n- ✅ Stock quantity matches the CSV data input\n    \n\n## Example Use Case\n\n### Scenario: Adding New Inventory Items\n\nAn e-commerce platform needs to add new products to their catalog. The inventory manager has a CSV file with product details:\n\n``` csv\nproduct_title,description,price,stock\nWireless Mouse,Ergonomic wireless mouse with USB receiver,29.99,100\nMechanical Keyboard,RGB backlit mechanical gaming keyboard,89.99,45\nUSB-C Hub,7-in-1 USB-C hub with HDMI and ethernet,49.99,75\n\n ```\n\n**Workflow:**\n\n1. Set up the environment with `baseUrl` = `https://dummyjson.com`\n    \n2. Configure Collection Runner with the CSV file\n    \n3. Run this request for each row in the CSV\n    \n4. The automated tests validate each product creation\n    \n5. Review the test results to ensure all products were added successfully\n    \n\nThis approach allows for efficient bulk product creation with automatic validation of each operation."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Product updated - status 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  " ",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "pm.test(\"Title, price, stock updated\", () => {",
+                  "    pm.expect(jsonData.title).to.eql(\"white nail bolish\");",
+                  "    pm.expect(jsonData.price).to.eql(7.5);",
+                  "    pm.expect(jsonData.stock).to.eql(30);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"white nail bolish\",\n  \"price\": 7.5,\n  \"stock\": 30\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "# Update Product\n\n## Overview\n\nThis endpoint updates an existing product's details in the DummyJSON API. You can modify the product's title, price, and stock quantity using a PUT request.\n\n## Endpoint\n\n```\nPUT {{baseUrl}}/products/{id}\n\n ```\n\n**Path Parameters:**\n\n- `id` (integer, required) - The unique identifier of the product to update\n    \n\n## Request Body\n\nThe request body should be in JSON format with the following parameters:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `title` | string | Optional | The updated name/title of the product |\n| `price` | number | Optional | The updated price of the product (decimal values supported) |\n| `stock` | integer | Optional | The updated stock quantity available |\n\n**Example Request Body:**\n\n``` json\n{\n  \"title\": \"white nail polish\",\n  \"price\": 7.5,\n  \"stock\": 30\n}\n\n ```\n\n## Response\n\n### Success Response (200 OK)\n\nWhen the product is successfully updated, the API returns the updated product object.\n\n**Response Body:**\n\n``` json\n{\n  \"id\": 1,\n  \"title\": \"white nail polish\",\n  \"price\": 7.5,\n  \"stock\": 30,\n  // ... other product fields\n}\n\n ```\n\n### Status Codes\n\n- `200 OK` - Product successfully updated\n    \n- `400 Bad Request` - Invalid request body or parameters\n    \n- `404 Not Found` - Product with specified ID does not exist\n    \n- `401 Unauthorized` - Authentication required (if applicable)\n    \n\n## Headers\n\n- `Content-Type: application/json` - Required for sending JSON data\n    \n\n## Notes\n\n- This is a PUT request, which typically replaces the entire resource. However, DummyJSON may support partial updates.\n    \n- Only the fields provided in the request body will be updated.\n    \n- The product ID in the URL path determines which product to update.\n    \n- Response time should typically be under 2000ms.\n    \n- Authentication may be required depending on the API configuration."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Product deleted - status 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  " ",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response has deleted product ID\", () => {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"productId\")));",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "# Delete Product\n\n## Overview\n\nThis endpoint deletes a product from the system by its unique identifier. Upon successful deletion, it returns the details of the deleted product for confirmation.\n\n## Endpoint Details\n\n- **Method:** `GET`\n    \n- **Path:** `/products/{{productId}}`\n    \n- **Full URL:** `{{baseUrl}}/products/{{productId}}`\n    \n\n## Path Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `productId` | integer | Yes | The unique identifier of the product to be deleted. This value is retrieved from the environment variable `{{productId}}`. |\n\n## Expected Response\n\n### Success Response (200 OK)\n\nWhen the product is successfully deleted, the API returns a `200 OK` status with the deleted product's details in JSON format.\n\n**Response Format:**\n\n``` json\n{\n  \"id\": 1,\n  \"title\": \"Product Name\",\n  \"description\": \"Product description\",\n  \"price\": 99.99,\n  // ... other product fields\n}\n\n ```\n\n**Response Headers:**\n\n- `Content-Type: application/json`\n    \n\n## Example Use Case\n\nThis endpoint is typically used when a user or administrator wants to remove a product from the catalog. After deletion, the response confirms which product was removed by returning its complete details, allowing the client to verify the correct item was deleted and potentially display a confirmation message to the user.\n\n## Test Validations\n\nThis request includes automated tests that validate:\n\n- ✅ **Status Code:** Confirms the response status is `200 OK`\n    \n- ✅ **Response Time:** Ensures the API responds in less than 2000ms\n    \n- ✅ **Content-Type:** Verifies the response header contains `application/json`\n    \n- ✅ **Product ID Match:** Validates that the returned product ID matches the `{{productId}}` environment variable\n    \n\nThese tests run automatically after each request to ensure the endpoint behaves as expected."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Carts",
+      "item": [
+        {
+          "name": "All carts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Carts array exists\", () => {",
+                  "    pm.expect(jsonData).to.have.property(\"carts\");",
+                  "    pm.expect(jsonData.carts).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "",
+                  "if (pm.request.url.query.has(\"limit\")) {",
+                  "    const limit = Number(pm.request.url.query.get(\"limit\"));",
+                  "    pm.test(\"Carts array length <= limit\", () => {",
+                  "        pm.expect(jsonData.carts.length).to.be.at.most(limit);",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts?limit=5&skip=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                },
+                {
+                  "key": "skip",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "# Get All Carts\n\n## Overview\n\nThis endpoint retrieves a paginated list of all shopping carts from the system. It returns cart details including products, quantities, prices, and user information.\n\n## Query Parameters\n\n| Parameter | Type | Required | Default | Description |\n| --- | --- | --- | --- | --- |\n| `limit` | integer | No | 20 | Maximum number of carts to return per request. Controls the page size for pagination. |\n| `skip` | integer | No | 0 | Number of carts to skip before starting to return results. Used for pagination offset. |\n\n## Response Format\n\nThe endpoint returns a JSON object containing:\n\n- `carts` - Array of cart objects\n    \n- `total` - Total number of carts available\n    \n- `skip` - Number of carts skipped\n    \n- `limit` - Maximum carts returned\n    \n\nEach cart object includes:\n\n- `id` - Unique cart identifier\n    \n- `products` - Array of products in the cart\n    \n- `total` - Total cart value\n    \n- `discountedTotal` - Total after discounts\n    \n- `userId` - ID of the user who owns the cart\n    \n- `totalProducts` - Number of product types\n    \n- `totalQuantity` - Total quantity of all items\n    \n\n## Example Use Cases\n\n**Retrieve first page of carts:**\n\n```\nGET /carts?limit=10&skip=0\n\n ```\n\n**Retrieve second page (next 10 carts):**\n\n```\nGET /carts?limit=10&skip=10\n\n ```\n\n**Get all carts with default pagination:**\n\n```\nGET /carts\n\n ```\n\n**Retrieve a large batch for reporting:**\n\n```\nGET /carts?limit=100&skip=0\n\n ```\n\n## Notes\n\n- The default limit is typically 20 carts if not specified\n    \n- Use `skip` in multiples of `limit` for consistent pagination\n    \n- The `total` field in the response indicates the total number of carts available, useful for calculating total pages\n    \n- Response time may increase with larger `limit` values\n    \n- Consider implementing client-side caching for frequently accessed cart data"
+          },
+          "response": []
+        },
+        {
+          "name": "a single cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  " ",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Cart has id and products array\", () => {",
+                  "    pm.expect(jsonData).to.have.property(\"id\");",
+                  "    pm.expect(jsonData).to.have.property(\"products\");",
+                  "    pm.expect(jsonData.products).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"cartId\", 12); "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/{{cartId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "{{cartId}}"
+              ]
+            },
+            "description": "# Get Single Cart by ID\n\nThis endpoint retrieves detailed information about a specific shopping cart using its unique identifier.\n\n## Endpoint Overview\n\nFetches a single cart resource from the DummyJSON API, returning complete cart details including all products contained within that cart.\n\n## Path Variables\n\n- **`{{cartId}}`** (number, required): The unique identifier of the cart to retrieve\n    \n    - Example: `12`\n        \n    - This variable is dynamically set in the pre-request script for testing purposes\n        \n    - In production use, replace with the actual cart ID you want to fetch\n        \n\n## Pre-request Script\n\nThe request includes a pre-request script that automatically sets the `cartId` environment variable to `12`:\n\n``` javascript\npm.environment.set(\"cartId\", 12);\n\n ```\n\nThis ensures consistent testing by always fetching cart #12 when the request is executed.\n\n## Expected Response Structure\n\nThe API returns a JSON object containing:\n\n- **`id`** (number): The cart's unique identifier\n    \n- **`products`** (array): List of products in the cart, where each product includes:\n    \n    - Product ID\n        \n    - Product title\n        \n    - Price\n        \n    - Quantity\n        \n    - Total price\n        \n    - Discount information\n        \n- **`total`** (number): Total cart value\n    \n- **`discountedTotal`** (number): Total after discounts\n    \n- **`userId`** (number): ID of the user who owns the cart\n    \n- **`totalProducts`** (number): Count of distinct products\n    \n- **`totalQuantity`** (number): Total quantity of all items\n    \n\n## Automated Tests\n\nThis request includes comprehensive test validation:\n\n1. **Status Code Validation**: Verifies the response returns HTTP 200 (OK)\n    \n2. **Performance Check**: Ensures response time is under 2000ms\n    \n3. **Content-Type Verification**: Confirms the response is `application/json`\n    \n4. **Response Structure Validation**: Checks that the response contains:\n    \n    - An `id` property\n        \n    - A `products` array\n        \n\nThese tests run automatically after each request execution to ensure API reliability and data integrity."
+          },
+          "response": []
+        },
+        {
+          "name": "carts by a user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/carts/user/33",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "user",
+                "33"
+              ]
+            },
+            "description": "# Get User's Carts\n\n## Overview\n\nThis endpoint retrieves all shopping carts associated with a specific user. It returns comprehensive cart information including the products in each cart, their quantities, prices, and total amounts.\n\n## Path Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `userId` | string | Yes | The unique identifier of the user whose carts you want to retrieve |\n\n## Expected Response\n\nThe response contains an array of cart objects for the specified user. Each cart includes:\n\n- **Cart ID**: Unique identifier for the cart\n    \n- **Products**: Array of products in the cart with details such as:\n    \n    - Product ID, title, price\n        \n    - Quantity added to cart\n        \n    - Total price for that product\n        \n    - Discount information (if applicable)\n        \n- **Total**: Overall cart total amount\n    \n- **Discounted Total**: Total after applying discounts\n    \n- **User ID**: The ID of the user who owns the cart\n    \n- **Total Products**: Count of distinct products in the cart\n    \n- **Total Quantity**: Sum of all product quantities\n    \n\n## Example Use Case\n\nUse this endpoint when you need to:\n\n- Display a user's shopping cart history\n    \n- Retrieve active carts for a logged-in user\n    \n- Analyze user shopping behavior and cart contents\n    \n- Calculate total cart value for a specific user\n    \n\n## Variables\n\nThis request uses the following environment variables:\n\n- `{{baseUrl}}`: The base URL for the DummyJSON API\n    \n- `{{userId}}`: The ID of the user whose carts are being retrieved\n    \n\nMake sure these variables are properly configured in your active environment before sending the request."
+          },
+          "response": []
+        },
+        {
+          "name": "a new cart",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const datacartsnew = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 201 or 200\", () => {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "pm.test(\"Cart id exists\", () => {",
+                  "  pm.expect(datacartsnew).to.have.property(\"id\");",
+                  "});",
+                  "",
+                  "pm.test(\"Products array exists\", () => {",
+                  "  pm.expect(datacartsnew.products).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Total is calculated\", () => {",
+                  "  pm.expect(datacartsnew).to.have.property(\"total\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 33,\n  \"products\": [\n    {\n      \"id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"id\": 5,\n      \"quantity\": 1\n    }\n  ]\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "add"
+              ]
+            },
+            "description": "# Add a New Cart\n\nThis endpoint creates a new shopping cart for a user with specified products.\n\n## Request Body Parameters\n\nThe request requires a JSON body with the following structure:\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `userId` | integer | Yes | The unique identifier of the user for whom the cart is being created |\n| `products` | array | Yes | An array of product objects to be added to the cart |\n| `products[].id` | integer | Yes | The unique identifier of the product |\n| `products[].quantity` | integer | Yes | The quantity of the product to add to the cart |\n\n### Example Request Body\n\n``` json\n{\n  \"userId\": 33,\n  \"products\": [\n    {\n      \"id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"id\": 5,\n      \"quantity\": 1\n    }\n  ]\n}\n\n ```\n\n## Expected Responses\n\n### Success Response (200 OK or 201 Created)\n\nWhen a cart is successfully created, the API returns a JSON object containing:\n\n- `id` - The unique identifier of the newly created cart\n    \n- `products` - An array of products added to the cart with their details\n    \n- `total` - The calculated total price of all products in the cart\n    \n- Additional cart metadata\n    \n\nThe response will have a `Content-Type` header of `application/json`.\n\n**Expected response time:** Less than 2000ms\n\n### Example Success Response\n\n``` json\n{\n  \"id\": 1,\n  \"products\": [\n    {\n      \"id\": 1,\n      \"quantity\": 2,\n      \"price\": 549.99,\n      \"total\": 1099.98\n    },\n    {\n      \"id\": 5,\n      \"quantity\": 1,\n      \"price\": 899.99,\n      \"total\": 899.99\n    }\n  ],\n  \"total\": 1999.97,\n  \"userId\": 33\n}\n\n ```\n\n## API Behavior Notes\n\n- The endpoint accepts multiple products in a single request\n    \n- Each product must have a valid `id` and `quantity` greater than 0\n    \n- The API automatically calculates the total price based on product prices and quantities\n    \n- The response includes the complete cart object with all calculated values\n    \n- This is a POST request that creates a new resource, so expect either a 200 or 201 status code"
+          },
+          "response": []
+        },
+        {
+          "name": "a new cart-invalid quantity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const newCartDat = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 400 for invalid quantity\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Error message , invalid quantity\", () => {",
+                  "    pm.expect(newCartDat.message).to.eql(\"products can not be empty\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": {{userId}},\n  \"productId\": 1,\n  \"quantity\": 0\n}\n\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carts/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carts",
+                "add"
+              ]
+            },
+            "description": "# Add to Cart - Invalid Quantity Test\n\n## Overview\n\nThis request tests the cart API's validation logic for invalid product quantities. It attempts to add a product with a quantity of `0` to verify that the API properly rejects invalid input and returns an appropriate error response.\n\n## Purpose\n\nThis is a **negative test case** designed to ensure the API correctly validates cart items before processing. The API should reject requests where the product quantity is zero or invalid.\n\n## Request Parameters\n\n### Body Parameters (JSON)\n\n- **userId** (integer): The ID of the user adding items to their cart\n    \n    - Uses the variable `{{userId}}` from the active environment\n        \n- **productId** (integer): The ID of the product being added to the cart\n    \n    - Set to `1` for this test\n        \n- **quantity** (integer): The quantity of the product to add\n    \n    - Set to `0` to trigger validation error\n        \n\n## Expected Response\n\n### Status Code\n\n`400 Bad Request` - Indicates the request contains invalid data\n\n### Response Body\n\n``` json\n{\n  \"message\": \"products can not be empty\"\n}\n\n ```\n\n## Test Validations\n\nThis request includes automated tests that verify:\n\n1. ✓ **Status Code**: Response returns `400` status code\n    \n2. ✓ **Response Time**: API responds in under 2000ms\n    \n3. ✓ **Content-Type**: Response header is `application/json`\n    \n4. ✓ **Error Message**: Response body contains the expected error message: `\"products can not be empty\"`\n    \n\n## Usage Notes\n\n- This test ensures the API enforces business rules around cart quantities\n    \n- A quantity of `0` should not be allowed when adding products to a cart"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "item": [
+        {
+          "name": "all recipes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200 OK\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "pm.test(\"Response contains recipes array\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.have.property(\"recipes\");",
+                  "    pm.expect(data.recipes).to.be.an(\"array\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recipes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recipes"
+              ]
+            },
+            "description": "# Get All Recipes\n\n## Description\n\nThis endpoint retrieves a list of all available recipes from the DummyJSON API. It returns a paginated collection of recipe objects with detailed information about each recipe including ingredients, cooking instructions, nutritional data, and user ratings.\n\n## Response Structure\n\nThe endpoint returns a JSON object with the following top-level fields:\n\n- **recipes** (array): An array of recipe objects\n    \n- **total** (number): The total number of recipes available\n    \n- **skip** (number): The number of recipes skipped (for pagination)\n    \n- **limit** (number): The maximum number of recipes returned in this response\n    \n\n### Recipe Object Properties\n\nEach recipe object in the `recipes` array contains:\n\n| Property | Type | Description |\n| --- | --- | --- |\n| `id` | number | Unique identifier for the recipe |\n| `name` | string | Name of the recipe |\n| `ingredients` | array | List of ingredients required |\n| `instructions` | array | Step-by-step cooking instructions |\n| `prepTimeMinutes` | number | Preparation time in minutes |\n| `cookTimeMinutes` | number | Cooking time in minutes |\n| `servings` | number | Number of servings the recipe yields |\n| `difficulty` | string | Difficulty level (e.g., \"Easy\", \"Medium\", \"Hard\") |\n| `cuisine` | string | Type of cuisine (e.g., \"Italian\", \"Asian\", \"Mexican\") |\n| `caloriesPerServing` | number | Caloric content per serving |\n| `tags` | array | Descriptive tags for the recipe |\n| `userId` | number | ID of the user who created/submitted the recipe |\n| `image` | string | URL to the recipe image |\n| `rating` | number | Average user rating |\n| `reviewCount` | number | Number of reviews received |\n| `mealType` | array | Meal categories (e.g., \"Breakfast\", \"Lunch\", \"Dinner\", \"Snack\") |\n\n## Query Parameters\n\nThis endpoint supports the following optional query parameters for filtering and sorting:\n\n| Parameter | Type | Description | Example Values |\n| --- | --- | --- | --- |\n| `sortBy` | string | Field to sort the results by | `name` |\n| `order` | string | Sort order direction | `asc`, `desc` |\n\n### Usage Examples\n\n- Sort recipes by name in ascending order: `?sortBy=name&order=asc`\n    \n- Sort recipes by name in descending order: `?sortBy=name&order=desc`\n    \n\n## Response Format\n\nThe response is returned in JSON format with `Content-Type: application/json` header.\n\n**Example Response:**\n\n``` json\n{\n  \"recipes\": [\n    {\n      \"id\": 1,\n      \"name\": \"Classic Margherita Pizza\",\n      \"ingredients\": [\"Pizza dough\", \"Tomato sauce\", \"Fresh mozzarella cheese\", ...],\n      \"instructions\": [\"Preheat the oven to 475°F (245°C).\", ...],\n      \"prepTimeMinutes\": 20,\n      \"cookTimeMinutes\": 15,\n      \"servings\": 4,\n      \"difficulty\": \"Easy\",\n      \"cuisine\": \"Italian\",\n      \"caloriesPerServing\": 300,\n      \"tags\": [\"Pizza\", \"Italian\"],\n      \"userId\": 166,\n      \"image\": \"https://cdn.dummyjson.com/recipe-images/...\",\n      \"rating\": 4.6,\n      \"reviewCount\": 98,\n      \"mealType\": [\"Dinner\"]\n    }\n  ],\n  \"total\": 50,\n  \"skip\": 0,\n  \"limit\": 30\n}\n\n ```\n\n## Usage Notes\n\n- **Pagination**: By default, the API returns up to 30 recipes per request. Use the `skip` and `limit` fields to implement pagination in your application.\n    \n- **Performance**: The endpoint typically responds within 2000ms under normal conditions.\n    \n- **Status Code**: A successful request returns HTTP status code `200 OK`.\n    \n- **Data Freshness**: Recipe data includes community-contributed content and may be updated periodically.\n    \n- **Image URLs**: Recipe images are hosted on the DummyJSON CDN and are publicly accessible.\n    \n- **Filtering**: Additional filtering capabilities may be available - refer to the API documentation for advanced query options."
+          },
+          "response": []
+        },
+        {
+          "name": "a single recipe",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.variables.set(\"recipeId\", 1);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200 OK\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+                  "        .to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response has a recipe object\", () => {",
+                  "    const data = pm.response.json();",
+                  "    pm.expect(data).to.be.an(\"object\");",
+                  "    pm.expect(data).to.have.property(\"id\");",
+                  "    pm.expect(data).to.have.property(\"ingredients\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recipes/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recipes",
+                "1"
+              ]
+            },
+            "description": "# Get a Single Recipe\n\nThis endpoint retrieves detailed information about a specific recipe by its unique identifier.\n\n## Endpoint\n\n`GET {{baseUrl}}/recipes/recipeId`\n\n## Path Variables\n\n| Variable | Type | Description | Example |\n| --- | --- | --- | --- |\n| `recipeId` | integer | The unique identifier of the recipe to retrieve | `1` |\n\n## Response Format\n\nThe endpoint returns a JSON object containing the recipe details with the following structure:\n\n``` json\n{\n  \"id\": 1,\n  \"ingredients\": [...],\n  // Additional recipe properties\n}\n\n ```\n\n### Response Properties\n\n- **id**: The unique identifier of the recipe\n    \n- **ingredients**: An array containing the list of ingredients for the recipe\n    \n- Additional properties may include recipe name, instructions, cooking time, etc.\n    \n\n## Success Response\n\n- **Status Code**: `200 OK`\n    \n- **Content-Type**: `application/json`\n    \n- **Response Time**: Expected to be under 2000ms\n    \n\n## Usage Notes\n\n- The `recipeId` path variable is automatically set to `1` in the pre-request script for testing purposes\n    \n- The request includes automated tests to verify:\n    \n    - Response status is 200 OK\n        \n    - Response time is below 2000ms\n        \n    - Content-Type header is application/json\n        \n    - Response contains a valid recipe object with required properties (id, ingredients)\n        \n- Ensure the `baseUrl` environment variable is properly configured before sending the request\n    \n\n## Example Request\n\n```\nGET https://api.example.com/recipes/1\n\n ```\n\n## Error Responses\n\n- **404 Not Found**: Recipe with the specified ID does not exist\n    \n- **400 Bad Request**: Invalid recipe ID format"
+          },
+          "response": []
+        },
+        {
+          "name": "Sort Recipes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200 OK\", () => pm.response.to.have.status(200));",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "const recipesResponse = pm.response.json();",
+                  "pm.test(\"Recipes are sorted by title ascending\", () => {",
+                  "    const titles = recipesResponse.recipes.map(r => r.title);",
+                  "    const sorted = [...titles].sort((a, b) => a.localeCompare(b));",
+                  "    pm.expect(titles).to.eql(sorted);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recipes?sortBy=name&order=asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recipes"
+              ],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "name"
+                },
+                {
+                  "key": "order",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "# Sort Recipes\n\n## Overview\n\nThis endpoint retrieves a list of recipes sorted by a specified field in a specified order. By default, it returns recipes sorted by name in ascending order.\n\n## Query Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `sortBy` | string | No | The field to sort recipes by. Common values include `name`, `title`, `prepTime`, `cookTime`, etc. |\n| `order` | string | No | The sort order for results. Accepts `asc` (ascending) or `desc` (descending). |\n\n## Response Format\n\nThe endpoint returns a JSON object containing an array of recipe objects:\n\n``` json\n{\n  \"recipes\": [\n    {\n      \"id\": 1,\n      \"title\": \"Recipe Name\",\n      \"ingredients\": [...],\n      \"instructions\": \"...\",\n      ...\n    }\n  ]\n}\n\n ```\n\n## Example Use Case\n\nRetrieve all recipes sorted alphabetically by name:\n\n```\nGET {{baseUrl}}/recipes?sortBy=name&order=asc\n\n ```\n\nSort recipes by preparation time in descending order (longest first):\n\n```\nGET {{baseUrl}}/recipes?sortBy=prepTime&order=desc\n\n ```\n\n## Notes on Sorting Behavior\n\n- The sorting is case-insensitive for string fields\n    \n- If no `sortBy` parameter is provided, the default sorting behavior of the API applies\n    \n- If no `order` parameter is provided, ascending order is typically used by default\n    \n- The response includes all recipe fields regardless of which field is used for sorting"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Recipe",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200 OK\", () => pm.response.to.have.status(200))",
+                  "pm.test(\"Content-Type is application/json\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Chocolate Avocado Mousse\",\n  \"description\": \"A creamy, healthy chocolate mousse made with ripe avocados and cocoa powder. Perfect for dessert lovers looking for a guilt-free treat.\",\n  \"ingredients\": [\n    \"ripe avocado\",\n    \"unsweetened cocoa powder\",\n    \"honey\",\n    \"vanilla extract\",\n    \"pinch of salt\"\n  ],\n  \"prepTime\": 15,\n  \"servings\": 2,\n  \"category\": \"desserts\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/recipes/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recipes",
+                "1"
+              ]
+            },
+            "description": "# Update Recipe\n\nThis endpoint updates an existing recipe with the specified ID. In this case, it updates the recipe with ID `1`.\n\n## Request Method\n\n`PATCH`\n\n## Endpoint\n\n```\nPATCH {{baseUrl}}/recipes/1\n\n ```\n\n## Headers\n\n- `Content-Type: application/json` - Required to send JSON data in the request body\n    \n\n## Request Body\n\nThe request body should contain the fields you want to update for the recipe. All fields are optional in a PATCH request:\n\n| Field | Type | Description | Example |\n| --- | --- | --- | --- |\n| `title` | string | The name of the recipe | \"Chocolate Avocado Mousse\" |\n| `description` | string | A detailed description of the recipe | \"A creamy, healthy chocolate mousse made with ripe avocados and cocoa\" |\n| `ingredients` | array of strings | List of ingredients needed for the recipe | \\[\"ripe avocado\", \"unsweetened cocoa powder\", \"honey\", \"vanilla extract\", \"pinch of salt\"\\] |\n| `prepTime` | number | Preparation time in minutes | 15 |\n| `servings` | number | Number of servings the recipe yields | 2 |\n| `category` | string | The category or type of recipe | \"desserts\" |\n\n### Example Request Body\n\n``` json\n  {\n  \"id\": 1,\n  \"name\": \"Tasty Pizza\",\n  {...}\n}\n\n ```\n\n## Expected Response\n\nA successful request will return:\n\n- **Status Code**: `200 OK`\n    \n- **Content-Type**: `application/json`\n    \n- **Response Time**: Should be under 2000ms\n    \n- **Body**: The updated recipe object with all fields including the modifications made\n    \n\n## Notes\n\n- Only the fields provided in the request body will be updated; other fields will remain unchanged\n    \n- The recipe ID is specified in the URL path parameter\n    \n- Ensure the `Content-Type` header is set to `application/json`\n    \n- Authentication requirements may vary depending on the API implementation"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.test(\"Response time < 2000ms\", () => {",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "});",
+          ""
+        ]
+      }
+    }
+  ]
+}

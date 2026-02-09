@@ -1,0 +1,218 @@
+{
+  "info": {
+    "_postman_id": "febd0e80-764b-41a8-a21b-5a95df9da74d",
+    "name": "K6",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51082348",
+    "_collection_link": "https://go.postman.co/collection/51082348-febd0e80-764b-41a8-a21b-5a95df9da74d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "All Products Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonData = pm.response.json();",
+              "",
+              "",
+              "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+              "",
+              "",
+              "",
+              "pm.test(\"Content-Type is application/json\", () => {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Products array exists\", () => {",
+              "    pm.expect(jsonData).to.have.property(\"products\");",
+              "    pm.expect(jsonData.products).to.be.an(\"array\");",
+              "});",
+              "",
+              "",
+              "pm.test(\"Products array is not empty\", () => {",
+              "    pm.expect(jsonData.products.length).to.be.above(0);",
+              "});",
+              "",
+              "",
+              "pm.test(\"First product has required keys\", () => {",
+              "    const firstProduct = jsonData.products[0];",
+              "    pm.expect(firstProduct).to.have.property(\"id\");",
+              "    pm.expect(firstProduct).to.have.property(\"title\");",
+              "    pm.expect(firstProduct).to.have.property(\"price\");",
+              "    pm.expect(firstProduct).to.have.property(\"stock\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products"
+          ]
+        },
+        "description": "# Get All Products\n\n## Overview\n\nThis endpoint retrieves a complete list of all products available in the DummyJSON API. It returns a paginated collection of product objects with detailed information about each item.\n\n## Endpoint Details\n\n- **Method:** GET\n    \n- **URL:** `{{baseUrl}}/products`\n    \n- **Authentication:** None required\n    \n\n## Response Structure\n\nThe API returns a JSON object containing an array of products:\n\n``` json\n{\n  \"products\": [\n    {\n      \"id\": 1,\n      \"title\": \"Product Name\",\n      \"description\": \"Product description\",\n      \"price\": 549,\n      \"discountPercentage\": 12.96,\n      \"rating\": 4.69,\n      \"stock\": 94,\n      \"brand\": \"Brand Name\",\n      \"category\": \"Category Name\",\n      \"thumbnail\": \"https://...\",\n      \"images\": [\"https://...\"]\n    }\n  ],\n  \"total\": 100,\n  \"skip\": 0,\n  \"limit\": 30\n}\n\n ```\n\n## Response Fields\n\n### Product Object Properties\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `id` | number | Unique identifier for the product |\n| `title` | string | Product name/title |\n| `description` | string | Detailed product description |\n| `price` | number | Product price in USD |\n| `discountPercentage` | number | Discount percentage applied |\n| `rating` | number | Average customer rating (0-5) |\n| `stock` | number | Available inventory quantity |\n| `brand` | string | Product brand name |\n| `category` | string | Product category |\n| `thumbnail` | string | URL to product thumbnail image |\n| `images` | array | Array of product image URLs |\n\n### Pagination Fields\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `total` | number | Total number of products available |\n| `skip` | number | Number of products skipped (for pagination) |\n| `limit` | number | Maximum products returned per request |\n\n## Usage Notes\n\n- **Default Behavior:** Returns the first 30 products by default\n    \n- **Pagination:** Use query parameters `limit` and `skip` to paginate through results\n    \n- **Response Time:** Expected response time is under 2 seconds\n    \n- **Content-Type:** Returns `application/json`\n    \n- **Status Code:** Successful requests return `200 OK`\n    \n\n## Example Use Cases\n\n1. **Display Product Catalog:** Fetch all products to display in an e-commerce storefront\n    \n2. **Inventory Management:** Retrieve product stock levels for inventory tracking\n    \n3. **Price Comparison:** Get pricing information across all products\n    \n4. **Search Index:** Build a searchable product database\n    \n\n## Automated Tests\n\nThis request includes automated tests that verify:\n\n- ✓ Status code is 200\n    \n- ✓ Response time is less than 2000ms\n    \n- ✓ Content-Type header is application/json\n    \n- ✓ Products array exists and is not empty\n    \n- ✓ Product objects contain required fields (id, title, price, stock)"
+      },
+      "response": []
+    },
+    {
+      "name": "Product by Id Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonData = pm.response.json();",
+              "",
+              "pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+              "",
+              "",
+              "pm.test(\"Content-Type is application/json\", () => {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "",
+              "const productSchema = {",
+              "    type: \"object\",",
+              "    required: [\"id\", \"title\", \"description\", \"price\", \"stock\", \"category\"],",
+              "    properties: {",
+              "        id: { type: \"number\" },",
+              "        title: { type: \"string\" },",
+              "        description: { type: \"string\" },",
+              "        price: { type: \"number\" },",
+              "        stock: { type: \"number\" },",
+              "        category: { type: \"string\" },",
+              "        discountPercentage: { type: \"number\" },",
+              "        rating: { type: \"number\" },",
+              "        brand: { type: \"string\" },",
+              "        thumbnail: { type: \"string\" },",
+              "        images: { type: \"array\" }",
+              "    },",
+              "    additionalProperties: true",
+              "};",
+              "",
+              "",
+              "pm.test(\"Product response schema is valid\", () => {",
+              "    pm.response.to.have.jsonSchema(productSchema);",
+              "});",
+              "",
+              "",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "{{productId}}"
+          ]
+        },
+        "description": "# Get Product by ID\n\nThis endpoint retrieves detailed information about a specific product using its unique identifier.\n\n## Endpoint\n\n`GET {{baseUrl}}/products/{{productId}}`\n\n## Path Variables\n\n- `productId` (required) - The unique identifier of the product to retrieve\n    \n\n## Query Parameters\n\nNone\n\n## Request Headers\n\n- `Content-Type: application/json`\n    \n\n## Response\n\n### Success Response (200 OK)\n\nReturns a product object with the following properties:\n\n``` json\n{\n  \"id\": 1,\n  \"title\": \"Product Name\",\n  \"description\": \"Product description\",\n  \"price\": 99.99,\n  \"discountPercentage\": 12.96,\n  \"rating\": 4.69,\n  \"stock\": 94,\n  \"brand\": \"Brand Name\",\n  \"category\": \"Category Name\",\n  \"thumbnail\": \"https://...\",\n  \"images\": [\"https://...\"]\n}\n\n ```\n\n### Error Responses\n\n- `404 Not Found` - Product with the specified ID does not exist\n    \n- `400 Bad Request` - Invalid product ID format\n    \n\n## Example Usage\n\nTo retrieve product with ID 1:\n\n- Set `productId` variable to `1`\n    \n- Send the request\n    \n\n## Notes\n\n- The `productId` must be a valid integer\n    \n- Response includes complete product details including images and stock information\n    \n- This endpoint does not require authentication"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Products Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Content-Type is application/json\", () => {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/search?q=phone",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "products",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "phone"
+            }
+          ]
+        },
+        "description": "# Search Products\n\n# Overview\n\nThis endpoint searches for products in the DummyJSON catalog based on a search query. It allows you to find products by matching the search term against product names, descriptions, and other relevant fields.\n\n## Parameters\n\n### Query Parameters\n\n| Parameter | Type | Required | Description |\n| --- | --- | --- | --- |\n| `q` | string | Yes | The search term used to find matching products. The search is performed across product names, descriptions, and other searchable fields. |\n\n**Example values:**\n\n- `phone` - Search for phone-related products\n    \n- `laptop` - Search for laptop products\n    \n- `watch` - Search for watch products\n    \n\n## Response\n\nThe endpoint returns a JSON object containing the search results.\n\n**Response Format:**\n\n``` json\n{\n  \"products\": [\n    {\n      \"id\": number,\n      \"title\": string,\n      \"description\": string,\n      \"price\": number,\n      \"category\": string,\n      // ... other product fields\n    }\n  ],\n  \"total\": number,\n  \"skip\": number,\n  \"limit\": number\n}\n\n ```\n\n**Response Fields:**\n\n- `products` - Array of product objects matching the search query\n    \n- `total` - Total number of products found\n    \n- `skip` - Number of products skipped (for pagination)\n    \n- `limit` - Maximum number of products returned\n    \n\n**Status Codes:**\n\n- `200 OK` - Search completed successfully\n    \n- `400 Bad Request` - Invalid search query\n    \n- `500 Internal Server Error` - Server error\n    \n\n## Example Use Cases\n\n### 1\\. **Search for Electronics**\n\nSearch for phone-related products to display in a mobile devices category:\n\n```\nGET {{baseUrl}}/products/search?q=phone\n\n ```\n\n### 2\\. **Product Discovery**\n\nAllow users to search for specific items in an e-commerce application by entering search terms in a search bar.\n\n### 3\\. **Inventory Lookup**\n\nEnable administrators to quickly find products in the catalog for inventory management purposes.\n\n### 4\\. **Autocomplete/Suggestions**\n\nUse this endpoint to power search suggestions as users type in a search field.\n\n## Notes\n\n- The search is case-insensitive and matches partial strings\n    \n- Empty or very short search terms may return broad results\n    \n- The endpoint supports pagination through additional query parameters (if available)\n    \n- Response time is typically under 2000ms\n    \n- Content-Type is always `application/json`\n    \n- Authentication may be required depending on API configuration"
+      },
+      "response": []
+    }
+  ]
+}
