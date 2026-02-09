@@ -23,6 +23,6 @@ jobs:
 
       - name: Run API tests
         run: |
-          cd api-testing/postman
+          cd API-Postman
           newman run DummyJson_postman_collection.json \
-            -e DummyJSON_Env_postman_environment.json
+            -e DummyJSON Env.postman_environment.json
