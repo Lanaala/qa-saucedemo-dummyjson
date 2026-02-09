@@ -1,0 +1,28 @@
+name: API Tests - Newman
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run API tests
+        run: |
+          cd api-testing/postman
+          newman run DummyJson_postman_collection.json \
+            -e DummyJSON_Env_postman_environment.json
